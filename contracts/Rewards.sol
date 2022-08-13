@@ -23,6 +23,7 @@ contract Rewards {
 
 	uint256 public cumulativeRewardPerTokenStored;
 	uint256 public pendingReward;
+	uint256 public pendingRewardApx;
 
 	mapping(address => uint256) private claimableReward;
 	mapping(address => uint256) private previousRewardPerToken;
@@ -36,6 +37,13 @@ contract Rewards {
 		uint256 amount
 	);
 
+	event CollectedApxReward(
+		address user,
+		address poolContract,
+		address currency,
+		uint256 amount
+	);
+
 	event updateReward(
 		address user,
 		uint256 claimableReward,
@@ -43,6 +51,10 @@ contract Rewards {
 	);
 
 	event notifyReward(
+		uint256 amount
+	);
+
+	event notifyRewardApx(
 		uint256 amount
 	);
 
@@ -100,6 +112,28 @@ contract Rewards {
 
 	}
 
+	function notifyRewardReceivedApx(uint256 amount) external onlyTreasuryOrPool {
+		pendingRewardApx += amount;
+		
+		emit notifyRewardApx(amount);
+	}
+
+	function updateRewardsApx(address account) public {
+		if(account == address(0)) return;
+		uint256 supply = IPool(pool).totalSupply();
+		if (supply > 0) {
+			cumulativeRewardPerTokenStored += pendingReward * UNIT / supply;
+			pendingReward = 0;
+		}
+		if (cumulativeRewardPerTokenStored == 0) return; // no rewards yet
+
+		uint256 accountBalance = IPool(pool).getBalance(account); // in CLP
+
+		claimableReward[account] += accountBalance * (cumulativeRewardPerTokenStored - previousRewardPerToken[account]) / UNIT;
+		previousRewardPerToken[account] = cumulativeRewardPerTokenStored;
+
+	}
+
 	function collectReward() external {
 
 		updateRewards(msg.sender);
@@ -117,9 +151,19 @@ contract Rewards {
 				currency, 
 				rewardToSend
 			);
-
 		}
+	}
 
+	function collectRewardApx(uint256 amount) external {
+		require(amount > 0, "No amount to collect");
+		_transferOut(msg.sender, amount);
+
+		emit CollectedApxReward(
+			msg.sender, 
+			pool, 
+			currency, 
+			amount
+		);
 	}
 
 	function getClaimableReward() external view returns(uint256) {

@@ -48,8 +48,6 @@ contract PoolAPX {
 
 		require(amount > 0, "!amount");
 
-		_updateRewards();
-
 		totalSupply += amount;
 		balances[msg.sender] += amount;
 
@@ -70,8 +68,6 @@ contract PoolAPX {
 			amount = balances[msg.sender];
 		}
 
-		_updateRewards();
-
 		totalSupply -= amount;
 		balances[msg.sender] -= amount;
 
@@ -86,15 +82,6 @@ contract PoolAPX {
 
 	function getBalance(address account) external view returns(uint256) {
 		return balances[account];
-	}
-
-	function _updateRewards() internal {
-		uint256 length = IRouter(router).currenciesLength();
-		for (uint256 i = 0; i < length; i++) {
-			address currency = IRouter(router).currencies(i);
-			address rewardsContract = IRouter(router).getApxRewards(currency);
-			IRewards(rewardsContract).updateRewards(msg.sender);
-		}
 	}
 
 	modifier onlyOwner() {

@@ -58,7 +58,7 @@ async function main() {
   const router = {address: '0x25Fb5B11c01E29118951F067B9eB66cf0732D96F'};
   // console.log("Router deployed to:", router.address);
 
-  Trading
+  // Trading
   const Trading = await hre.ethers.getContractFactory("Trading");
   const trading = await Trading.deploy();
   await trading.deployed();

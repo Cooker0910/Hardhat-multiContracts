@@ -21,7 +21,7 @@ contract Treasury {
 	address public oracle;
 
 	uint256 public constant UNIT = 10**18;
-	uint256 public expense;
+	uint256 public expense = 30;
 	uint256 public rewardETHForApx;
 	uint256 public rewardUSDCForApx;
 
@@ -97,8 +97,14 @@ contract Treasury {
 	) public onlyOwner {
 		address apxRewards = IRouter(router).getApxRewards(token);
 		uint256 apxReward;
-		if(IRouter(router).currencies(0) == token) apxReward = rewardETHForApx * 30 /100;
-		if(IRouter(router).currencies(1) == token) apxReward = rewardUSDCForApx * 30 /100;
+		if(IRouter(router).currencies(0) == token) {
+			apxReward = rewardETHForApx * expense /100;
+			rewardETHForApx = 0;
+		}
+		if(IRouter(router).currencies(1) == token) {
+			apxReward = rewardUSDCForApx * expense /100;
+			rewardUSDCForApx = 0;
+		}
 		_transferOut(token, apxRewards, apxReward);
 	}
 
