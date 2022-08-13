@@ -84,19 +84,19 @@ async function main() {
   // const apx = {address: '0xA1e0F70e41e7b438f69C27adba01BfE1869d2f03'};
   console.log("apx:", apx.address);
 
+  
+  const tWETH = await hre.ethers.getContractFactory("AlphaX");
+  const tETH = await tWETH.deploy("WTEH", "tWETH", 18);
+  await tETH.deployed();
+  
+  // const usdc = {address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'};
+  console.log("tETH:", tETH.address);
+  
   const usdc = await AlphaX.deploy("USD Coin", "USDC", 6);
   await usdc.deployed();
 
   // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
   console.log("usdc:", usdc.address);
-
-  const tWETH = await hre.ethers.getContractFactory("AlphaX");
-  const tETH = await tWETH.deploy("WTEH", "tWETH", 18);
-  await tETH.deployed();
-
-  // const usdc = {address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'};
-  console.log("tETH:", tETH.address);
-
 
   // PoolAPX
   const PoolAPX = await hre.ethers.getContractFactory("PoolAPX");
