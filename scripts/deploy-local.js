@@ -223,9 +223,13 @@ async function main() {
   }
 
   // Mint some APX, USDC
-  await usdc.mint(parseUnits("10000", 6));
-  await apx.mint(parseUnits("10000", 18));
-  await tETH.mint(parseUnits("10000", 18));
+  await usdc.mint(account, parseUnits("10000", 6));
+  await apx.mint(account, parseUnits("10000", 18));
+  await tETH.mint(account, parseUnits("10000", 18));
+
+  await usdc.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 6));
+  await apx.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 18));
+  await tETH.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 18));
 
 }
 

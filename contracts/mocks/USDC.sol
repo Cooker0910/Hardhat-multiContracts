@@ -16,8 +16,8 @@ contract USDC is ERC20 {
         return 18;
     }
 
-    function mint(uint256 amount) public {
-        _mint(msg.sender, amount);
+    function mint(address to, uint256 amount) public {
+        _mint(to, amount);
     }
 
 }
