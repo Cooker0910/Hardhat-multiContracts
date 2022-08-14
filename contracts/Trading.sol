@@ -583,11 +583,8 @@ contract Trading {
 		// adjust decimals
 		uint256 decimals = IRouter(router).getDecimals(currency);
 		amount = amount * (10**decimals) / (10**UNIT_DECIMALS);
-		if (currency == address(0)) {
-			payable(to).sendValue(amount);
-		} else {
-			IERC20(currency).safeTransfer(to, amount);
-		}
+
+		IERC20(currency).safeTransfer(to, amount);
 	}
 
 	function _validatePrice(

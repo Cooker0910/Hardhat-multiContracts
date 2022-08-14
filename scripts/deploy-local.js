@@ -179,10 +179,14 @@ async function main() {
   await oracle.setRouter(router.address);
   await poolETH.setRouter(router.address);
   await poolUSDC.setRouter(router.address);
+  await poolAPX.setEthReward(apxRewardsETH.address);
+  await poolAPX.setUsdcReward(apxRewardsUSDC.address);
   await poolRewardsETH.setRouter(router.address);
   await poolRewardsUSDC.setRouter(router.address);
   await apxRewardsETH.setRouter(router.address);
   await apxRewardsUSDC.setRouter(router.address);
+  await apxRewardsETH.setApx(apx.address);
+  await apxRewardsUSDC.setApx(apx.address);
 
   console.log("Linked router with contracts");
 

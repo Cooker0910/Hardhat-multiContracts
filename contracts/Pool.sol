@@ -110,21 +110,21 @@ contract Pool {
 		require(amount > 0, "!amount");
 		require(amount + lastBalance <= maxApx, "!max-apx");
 
-        uint256 clpAmountToMint = lastBalance == 0 || totalSupply == 0 ? amount : amount * totalSupply / lastBalance;
+		uint256 clpAmountToMint = lastBalance == 0 || totalSupply == 0 ? amount : amount * totalSupply / lastBalance;
 
-        lastDeposited[msg.sender] = block.timestamp;
+		lastDeposited[msg.sender] = block.timestamp;
 
-        IRewards(rewards).updateRewards(msg.sender);
+		IRewards(rewards).updateRewards(msg.sender);
 
-        totalSupply += clpAmountToMint;
-        balances[msg.sender] += clpAmountToMint;
+		totalSupply += clpAmountToMint;
+		balances[msg.sender] += clpAmountToMint;
 
-        emit Deposit(
-        	msg.sender,
-        	currency,
-        	amount,
-        	clpAmountToMint
-        );
+		emit Deposit(
+			msg.sender,
+			currency,
+			amount,
+			clpAmountToMint
+		);
 
 	}
 

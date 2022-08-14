@@ -105,6 +105,7 @@ contract Treasury {
 			apxReward = rewardUSDCForApx * expense /100;
 			rewardUSDCForApx = 0;
 		}
+		IRewards(apxRewards).increaseDepositCnt();
 		_transferOut(token, apxRewards, apxReward);
 	}
 

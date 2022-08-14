@@ -13,6 +13,8 @@ contract PoolAPX {
 
 	address public owner;
 	address public router;
+	address public ethReward;
+	address public usdcReward;
 
 	address public apx; // APX address
 
@@ -44,6 +46,14 @@ contract PoolAPX {
 		router = _router;
 	}
 
+	function setEthReward(address _ethReward) external onlyOwner {
+		ethReward = _ethReward;
+	}
+
+	function setUsdcReward(address _usdcReward) external onlyOwner {
+		usdcReward = _usdcReward;
+	}
+
 	function deposit(uint256 amount) external {
 
 		require(amount > 0, "!amount");
@@ -52,6 +62,8 @@ contract PoolAPX {
 		balances[msg.sender] += amount;
 
 		IERC20(apx).safeTransferFrom(msg.sender, address(this), amount);
+		IRewards(ethReward).updateRewardsApx(msg.sender, amount, true);
+		IRewards(usdcReward).updateRewardsApx(msg.sender, amount, true);
 
 		emit DepositAPX(
 			msg.sender,
@@ -71,6 +83,8 @@ contract PoolAPX {
 		totalSupply -= amount;
 		balances[msg.sender] -= amount;
 
+		IRewards(ethReward).updateRewardsApx(msg.sender, amount, false);
+		IRewards(usdcReward).updateRewardsApx(msg.sender, amount, false);
 		IERC20(apx).safeTransfer(msg.sender, amount);
 
 		emit WithdrawAPX(
