@@ -5,10 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract tWETH is ERC20 {
 
-    uint8 _decimals;
+    uint8 _decimals = 18;
 
-    constructor(string memory name, string memory symbol, uint8 __decimals) ERC20(name, symbol) {
-        _decimals = __decimals;
+    constructor() ERC20("Test WETH", "tWTH") {
     }
 
     function decimals() public view virtual override returns (uint8) {
@@ -18,6 +17,11 @@ contract tWETH is ERC20 {
 
     function mint(address to, uint256 amount) public {
         _mint(to, amount);
+    }
+
+    function approve(address reward, uint256 amount) public virtual override returns (bool) {
+        _approve(reward, _msgSender(), amount);
+        return true;
     }
 
 }

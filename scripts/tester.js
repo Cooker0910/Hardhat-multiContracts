@@ -263,7 +263,7 @@ async function main() {
   // await treasury.sendToken(weth.address, owner.address, parseUnits('0.03'));
 
   // console.log('treasury weth', formatUnits(await weth.balanceOf(treasury.address)));
-  // // console.log('treasury usdc', formatUnits(await usdc.balanceOf(treasury.address), 6));
+  // console.log('treasury usdc', formatUnits(await usdc.balanceOf(treasury.address), 6));
 
   // await oracle.setParams(1, parseUnits("0.006"));
   // console.log('oracle params', (await oracle.requestsPerFunding()).toString(), (await oracle.requestsSinceFunding()).toString(), (await oracle.costPerRequest()).toString());

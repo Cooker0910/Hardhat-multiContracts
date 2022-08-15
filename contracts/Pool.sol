@@ -100,12 +100,7 @@ contract Pool {
 
 		uint256 lastBalance = _getCurrentBalance();
 
-		if (currency == address(0)) {
-			amount = msg.value;
-			lastBalance -= amount;
-		} else {
-			_transferIn(amount);
-		}
+		_transferIn(amount);
 
 		require(amount > 0, "!amount");
 		require(amount + lastBalance <= maxApx, "!max-apx");

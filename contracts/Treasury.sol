@@ -106,7 +106,7 @@ contract Treasury {
 			rewardUSDCForApx = 0;
 		}
 		IRewards(apxRewards).increaseDepositCnt();
-		_transferOut(token, apxRewards, apxReward);
+		IERC20(token).safeTransferFrom(address(this), apxRewards, apxReward);
 	}
 
 	// To receive ETH

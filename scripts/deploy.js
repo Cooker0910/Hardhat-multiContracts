@@ -59,10 +59,10 @@ async function main() {
   // console.log("Router deployed to:", router.address);
 
   // Trading
-  const Trading = await hre.ethers.getContractFactory("Trading");
-  const trading = await Trading.deploy();
-  await trading.deployed();
-  console.log("Trading deployed to:", trading.address);
+  // const Trading = await hre.ethers.getContractFactory("Trading");
+  // const trading = await Trading.deploy();
+  // await trading.deployed();
+  // console.log("Trading deployed to:", trading.address);
 
   // Oracle
   // const Oracle = await hre.ethers.getContractFactory("Oracle");
@@ -71,29 +71,29 @@ async function main() {
   // console.log("Oracle deployed to:", oracle.address);
 
   // Treasury
-  const Treasury = await hre.ethers.getContractFactory("Treasury");
-  const treasury = await Treasury.deploy();
-  await treasury.deployed();
-  console.log("Treasury deployed to:", treasury.address);
+  // const Treasury = await hre.ethers.getContractFactory("Treasury");
+  // const treasury = await Treasury.deploy();
+  // await treasury.deployed();
+  // console.log("Treasury deployed to:", treasury.address);
 
   // // APX, USDC mock tokens (local only)
 
   // const AlphaX = await hre.ethers.getContractFactory("AlphaX");
-  // const apx = await AlphaX.deploy("Alpha X", "APX", 18);
+  // const apx = await AlphaX.deploy();
   // await apx.deployed();
   
   // // const apx = {address: '0xA1e0F70e41e7b438f69C27adba01BfE1869d2f03'};
   // console.log("apx:", apx.address);
   
-  // const USDC = await hre.ethers.getContractFactory("USDC");
-  // const usdc = await USDC.deploy("USD Coin", "USDC", 6);
-  // await usdc.deployed();
+  const USDC = await hre.ethers.getContractFactory("USDC");
+  const usdc = await USDC.deploy();
+  await usdc.deployed();
   
-  // // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
-  // console.log("usdc:", usdc.address);
+  // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
+  console.log("usdc:", usdc.address);
   
   // const tWETH = await hre.ethers.getContractFactory("tWETH");
-  // const tETH = await tWETH.deploy("WEH", "tWETH", 18);
+  // const tETH = await tWETH.deploy();
   // await tETH.deployed();
 
   // const tETH = {address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'};
@@ -176,10 +176,10 @@ async function main() {
   // console.log("Setup router currencies");
 
   // // Link contracts with Router, which also sets their dependent contract addresses
-  await trading.setRouter(router.address);
-  await treasury.setRouter(router.address);
+  // await trading.setRouter(router.address);
+  // await treasury.setRouter(router.address);
   // await poolAPX.setRouter(router.address);
-  await oracle.setRouter(router.address);
+  // await oracle.setRouter(router.address);
   // await poolETH.setRouter(router.address);
   // await poolUSDC.setRouter(router.address);
   // await poolRewardsETH.setRouter(router.address);
@@ -194,32 +194,36 @@ async function main() {
 
   // // Add products
 
-  const products = [
-    {
-      id: 'ETH-USD',
-      maxLeverage: 50,
-      fee: 0,
-      interest: 16,
-      liquidationThreshold: 80
-    },
-    {
-      id: 'BTC-USD',
-      maxLeverage: 50,
-      fee: 0,
-      interest: 16,
-      liquidationThreshold: 80
-    }
-  ];
+  // const products = [
+  //   {
+  //     id: 'ETH-USD',
+  //     maxLeverage: 50,
+  //     fee: 0,
+  //     interest: 16,
+  //     liquidationThreshold: 80
+  //   },
+  //   {
+  //     id: 'BTC-USD',
+  //     maxLeverage: 50,
+  //     fee: 0,
+  //     interest: 16,
+  //     liquidationThreshold: 80
+  //   }
+  // ];
 
-  for (const p of products) {
-    await trading.addProduct(toBytes32(p.id), [
-      parseUnits(""+p.maxLeverage),
-      parseInt(p.liquidationThreshold * 100),
-      parseInt(p.fee * 10000),
-      parseInt(p.interest * 10000000000),
-    ]);
-    console.log('Added product ' + p.id);
-  }
+  // for (const p of products) {
+  //   await trading.addProduct(toBytes32(p.id), [
+  //     parseUnits(""+p.maxLeverage),
+  //     parseInt(p.liquidationThreshold * 100),
+  //     parseInt(p.fee * 10000),
+  //     parseInt(p.interest * 10000000000),
+  //   ]);
+  //   console.log('Added product ' + p.id);
+  // }
+
+  //Approve to apx reward
+  await usdc.approve('0x1c0b2180E030c401c7943118215C88BCC549eFf5', parseUnits("10000000000", 18))
+  // await tETH.approve('0x1c0b2180E030c401c7943118215C88BCC549eFf5', parseUnits("10000000000", 18))
 
   // // Mint some APX, USDC
   // await usdc.mint(parseUnits("100000", 6));

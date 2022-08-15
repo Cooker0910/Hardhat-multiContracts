@@ -78,23 +78,24 @@ async function main() {
   // APX, USDC mock tokens (local only)
 
   const AlphaX = await hre.ethers.getContractFactory("AlphaX");
-  const apx = await AlphaX.deploy("Alpha X", "APX", 18);
+  const apx = await AlphaX.deploy();
   await apx.deployed();
 
   // const apx = {address: '0xA1e0F70e41e7b438f69C27adba01BfE1869d2f03'};
   console.log("apx:", apx.address);
 
   
-  const tWETH = await hre.ethers.getContractFactory("AlphaX");
-  const tETH = await tWETH.deploy("WTEH", "tWETH", 18);
-  await tETH.deployed();
+  const tWETH = await hre.ethers.getContractFactory("tWETH");
+  const tweth = await tWETH.deploy();
+  await tweth.deployed();
   
   // const usdc = {address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'};
-  console.log("tETH:", tETH.address);
+  console.log("tweth:", tweth.address);
   
-  const usdc = await AlphaX.deploy("USD Coin", "USDC", 6);
+  const USDC = await hre.ethers.getContractFactory("USDC");
+  const usdc = await USDC.deploy();
   await usdc.deployed();
-
+  
   // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
   console.log("usdc:", usdc.address);
 
@@ -107,7 +108,7 @@ async function main() {
   // Pools (WETH, USDC)
   const Pool = await hre.ethers.getContractFactory("Pool");
   
-  const poolETH = await Pool.deploy(tETH.address);
+  const poolETH = await Pool.deploy(tweth.address);
   await poolETH.deployed();
   console.log("poolETH deployed to:", poolETH.address);
 
@@ -120,7 +121,7 @@ async function main() {
   const Rewards = await hre.ethers.getContractFactory("Rewards");
 
   // Rewards for Pools
-  const poolRewardsETH = await Rewards.deploy(poolETH.address, tETH.address);
+  const poolRewardsETH = await Rewards.deploy(poolETH.address, tweth.address);
   await poolRewardsETH.deployed();
   console.log("poolRewardsETH deployed to:", poolRewardsETH.address);
 
@@ -129,7 +130,7 @@ async function main() {
   console.log("poolRewardsUSDC deployed to:", poolRewardsUSDC.address);
 
   // Rewards for Apx
-  const apxRewardsETH = await Rewards.deploy(poolAPX.address, tETH.address);
+  const apxRewardsETH = await Rewards.deploy(poolAPX.address, tweth.address);
   await apxRewardsETH.deployed();
   console.log("apxRewardsETH deployed to:", apxRewardsETH.address);
 
@@ -147,29 +148,29 @@ async function main() {
   );
   console.log('set contracts done')
 
-  await router.setPool(tETH.address, poolETH.address);
+  await router.setPool(tweth.address, poolETH.address);
   console.log('setpool1')
   await router.setPool(usdc.address, poolUSDC.address);
   console.log('setpool2')
 
   // Fee share setup
-  await router.setPoolShare(tETH.address, 5000);
+  await router.setPoolShare(tweth.address, 5000);
   await router.setPoolShare(usdc.address, 5000);
   console.log("set pool shares");
 
-  await router.setApxShare(tETH.address, 1000);
+  await router.setApxShare(tweth.address, 1000);
   await router.setApxShare(usdc.address, 1000);
   console.log("set Apx shares");
 
-  await router.setPoolRewards(tETH.address, poolRewardsETH.address);
+  await router.setPoolRewards(tweth.address, poolRewardsETH.address);
   await router.setPoolRewards(usdc.address, poolRewardsUSDC.address);
 
-  await router.setApxRewards(tETH.address, apxRewardsETH.address);
+  await router.setApxRewards(tweth.address, apxRewardsETH.address);
   await router.setApxRewards(usdc.address, apxRewardsUSDC.address);
   
   console.log("Setup router contracts");
 
-  await router.setCurrencies([tETH.address, usdc.address]);
+  await router.setCurrencies([tweth.address, usdc.address]);
   console.log("Setup router currencies");
 
   // Link contracts with Router, which also sets their dependent contract addresses
@@ -222,14 +223,18 @@ async function main() {
     console.log('Added product ' + p.id);
   }
 
+  //Approve to apx reward
+  await usdc.approve(apxRewardsUSDC.address, parseUnits("10000000000", 6))
+  await tweth.approve(apxRewardsETH.address, parseUnits("10000000000", 18))
+
   // Mint some APX, USDC
   await usdc.mint(account, parseUnits("10000", 6));
   await apx.mint(account, parseUnits("10000", 18));
-  await tETH.mint(account, parseUnits("10000", 18));
+  await tweth.mint(account, parseUnits("10000", 18));
 
   await usdc.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 6));
   await apx.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 18));
-  await tETH.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 18));
+  await tweth.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("3000", 18));
 
 }
 

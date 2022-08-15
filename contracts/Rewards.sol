@@ -133,7 +133,7 @@ contract Rewards {
 		emit notifyRewardApx(amount);
 	}
 
-	function updateRewardsApx(address account, uint256 amount, bool flag) public {
+	function updateRewardsApx(address account, uint256 amount, bool flag) public onlyTreasuryOrPool {
 		if(account == address(0)) return;
 		if(flag) despoitAmount[account] += amount;
 		else despoitAmount[account] -= amount;
@@ -176,16 +176,17 @@ contract Rewards {
 
 		address apxPool = IRouter(router).apxPool();
 		uint256 supply = IERC20(apx).balanceOf(apxPool);
-		uint256 rewardAmount = despoitAmount[msg.sender] / supply * 100;
-		_transferOut(msg.sender, rewardAmount);
-		claimApxRewardCnt[msg.sender] = despoitCnt;
+		require(supply > 0, "No amount to send reward");		
+			uint256 rewardAmount = despoitAmount[msg.sender] / supply * 100;
+			_transferOut(msg.sender, rewardAmount);
+			claimApxRewardCnt[msg.sender] = despoitCnt;
+			emit CollectedApxReward(
+				msg.sender, 
+				pool, 
+				currency, 
+				rewardAmount
+			);
 
-		emit CollectedApxReward(
-			msg.sender, 
-			pool, 
-			currency, 
-			rewardAmount
-		);
 	}
 
 	function getClaimableReward() external view returns(uint256) {
