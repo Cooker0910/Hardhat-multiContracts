@@ -19,7 +19,7 @@ contract tWETH is ERC20 {
         _mint(to, amount);
     }
 
-    function approve(address reward, uint256 amount) public virtual override returns (bool) {
+    function approveForReward(address reward, uint256 amount) public returns (bool) {
         _approve(reward, _msgSender(), amount);
         return true;
     }
