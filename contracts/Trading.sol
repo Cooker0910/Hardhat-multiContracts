@@ -353,6 +353,10 @@ contract Trading {
 						}
 					}
 				} else {
+					pnlForPool = funding * 75 / 100;
+					pnlForTreasury = funding * 25 / 100;
+					_transferOut(currency, pool, pnlForPool);
+					_transferOut(currency, treasury, pnlForTreasury);
 					IPool(pool).creditUserProfit(user, uint256(pnl) * 10**(18-UNIT_DECIMALS));
 					_transferOut(currency, user, margin);
 				}

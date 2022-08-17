@@ -224,8 +224,6 @@ async function main() {
   }
 
   //Approve to apx reward
-  await usdc.approveForReward(apxRewardsUSDC.address, parseUnits("10000000000", 6))
-  await tweth.approveForReward(apxRewardsETH.address, parseUnits("10000000000", 18))
 
   // Mint some APX, USDC
   await usdc.mint(account, parseUnits("10000", 6));
