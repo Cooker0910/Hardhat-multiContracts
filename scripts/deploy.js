@@ -71,10 +71,10 @@ async function main() {
   // console.log("Oracle deployed to:", oracle.address);
 
   // Treasury
-  // const Treasury = await hre.ethers.getContractFactory("Treasury");
-  // const treasury = await Treasury.deploy();
-  // await treasury.deployed();
-  // console.log("Treasury deployed to:", treasury.address);
+  const Treasury = await hre.ethers.getContractFactory("Treasury");
+  const treasury = await Treasury.deploy();
+  await treasury.deployed();
+  console.log("Treasury deployed to:", treasury.address);
 
   // // APX, USDC mock tokens (local only)
 
@@ -85,12 +85,12 @@ async function main() {
   // // const apx = {address: '0xA1e0F70e41e7b438f69C27adba01BfE1869d2f03'};
   // console.log("apx:", apx.address);
   
-  const USDC = await hre.ethers.getContractFactory("USDC");
-  const usdc = await USDC.deploy();
-  await usdc.deployed();
+  // const USDC = await hre.ethers.getContractFactory("USDC");
+  // const usdc = await USDC.deploy();
+  // await usdc.deployed();
   
   // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
-  console.log("usdc:", usdc.address);
+  // console.log("usdc:", usdc.address);
   
   // const tWETH = await hre.ethers.getContractFactory("tWETH");
   // const tETH = await tWETH.deploy();
@@ -177,7 +177,7 @@ async function main() {
 
   // // Link contracts with Router, which also sets their dependent contract addresses
   // await trading.setRouter(router.address);
-  // await treasury.setRouter(router.address);
+  await treasury.setRouter(router.address);
   // await poolAPX.setRouter(router.address);
   // await oracle.setRouter(router.address);
   // await poolETH.setRouter(router.address);
@@ -222,7 +222,7 @@ async function main() {
   // }
 
   //Approve to apx reward
-  await usdc.approve('0x1c0b2180E030c401c7943118215C88BCC549eFf5', parseUnits("10000000000", 18))
+  // await usdc.approve('0x1c0b2180E030c401c7943118215C88BCC549eFf5', parseUnits("10000000000", 18))
   // await tETH.approve('0x1c0b2180E030c401c7943118215C88BCC549eFf5', parseUnits("10000000000", 18))
 
   // // Mint some APX, USDC
