@@ -6,7 +6,7 @@ interface IRewards {
 
     function notifyRewardReceived(uint256 amount) external;
 
-    function increaseDepositCnt() external;
+    function adminAirdrop(uint256 amount) external;
 
-    function updateRewardsApx(address account, uint256 amount, bool flag) external;
+    function updateRewardsApx(address account, uint256 amount) external;
 }

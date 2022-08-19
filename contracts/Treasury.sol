@@ -21,8 +21,6 @@ contract Treasury {
 	address public oracle;
 
 	uint256 public constant UNIT = 10**18;
-	uint256 public rewardEthForApx;
-	uint256 public rewardUsdcForApx;
 
 	constructor() {
 		owner = msg.sender;
@@ -63,14 +61,6 @@ contract Treasury {
 
 	}
 
-	function notifyApxReward(
-		address currency,
-		uint256 amount
-	) external onlyTrading {
-			if(IRouter(router).currencies(0) == currency) rewardEthForApx += amount;
-			if(IRouter(router).currencies(1) == currency) rewardUsdcForApx += amount;
-	}
-
 	function fundOracle(
 		address destination, 
 		uint256 amount
@@ -96,8 +86,8 @@ contract Treasury {
 		require(balance > 0, "No amount for reward");
 		require(balance > amount, "Exceed amount to send");
 		address apxRewards = IRouter(router).getApxRewards(token);
-		IRewards(apxRewards).increaseDepositCnt();
-		IERC20(token).transfer(apxRewards, amount * 10 ** 10);
+		IRewards(apxRewards).adminAirdrop(amount);
+		IERC20(token).transfer(apxRewards, amount);
 	}
 
 	// To receive ETH

@@ -59,11 +59,11 @@ contract PoolAPX {
 		require(amount > 0, "!amount");
 
 		totalSupply += amount;
+		IRewards(ethReward).updateRewardsApx(msg.sender, balances[msg.sender]);
+		IRewards(usdcReward).updateRewardsApx(msg.sender, balances[msg.sender]);
 		balances[msg.sender] += amount;
 
 		IERC20(apx).safeTransferFrom(msg.sender, address(this), amount);
-		IRewards(ethReward).updateRewardsApx(msg.sender, amount, true);
-		IRewards(usdcReward).updateRewardsApx(msg.sender, amount, true);
 
 		emit DepositAPX(
 			msg.sender,
@@ -81,10 +81,10 @@ contract PoolAPX {
 		}
 
 		totalSupply -= amount;
+		IRewards(ethReward).updateRewardsApx(msg.sender, balances[msg.sender]);
+		IRewards(usdcReward).updateRewardsApx(msg.sender, balances[msg.sender]);
 		balances[msg.sender] -= amount;
 
-		IRewards(ethReward).updateRewardsApx(msg.sender, amount, false);
-		IRewards(usdcReward).updateRewardsApx(msg.sender, amount, false);
 		IERC20(apx).safeTransfer(msg.sender, amount);
 
 		emit WithdrawAPX(

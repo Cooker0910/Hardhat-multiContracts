@@ -126,7 +126,7 @@ contract Pool {
 	function withdraw(uint256 currencyAmount) external {
 
 		require(currencyAmount > 0, "!amount");
-		require(block.timestamp > lastDeposited[msg.sender] + minDepositTime, "!cooldown");
+		// require(block.timestamp > lastDeposited[msg.sender] + minDepositTime, "!cooldown");
 
 		IRewards(rewards).updateRewards(msg.sender);
 
@@ -198,11 +198,8 @@ contract Pool {
 		// adjust decimals
 		uint256 decimals = IRouter(router).getDecimals(currency);
 		amount = amount * (10**decimals) / UNIT;
-		if (currency == address(0)) {
-			payable(to).sendValue(amount);
-		} else {
-			IERC20(currency).safeTransfer(to, amount);
-		}
+		
+		IERC20(currency).safeTransfer(to, amount);
 	}
 
 	function _getCurrentBalance() internal view returns(uint256) {

@@ -7,11 +7,12 @@ import "./libraries/Address.sol";
 import "./interfaces/IRouter.sol";
 import "./interfaces/ITrading.sol";
 import "./interfaces/IPool.sol";
+import "./interfaces/IPoolApx.sol";
 
 contract Rewards {
 
 	using SafeERC20 for IERC20; 
-    using Address for address payable;
+	using Address for address payable;
 
 	address public owner;
 	address public router;
@@ -23,6 +24,7 @@ contract Rewards {
 	address public currency; // rewards paid in this
 
 	uint256 public cumulativeRewardPerTokenStored;
+	uint256 public cumulativeRewardPerApxStored;
 	uint256 public pendingReward;
 	uint256 public pendingRewardApx;
 	
@@ -30,8 +32,9 @@ contract Rewards {
 	mapping(address => uint256) private previousRewardPerToken;
 
 	uint256 public despoitCnt;
-	mapping(address => uint256) public claimApxRewardCnt;
 	mapping(address => uint256) public despoitAmount;
+	mapping(address => uint256) public pendingRewardForApx;
+	mapping(address => uint256) public latestCum;
 
 	uint256 public constant UNIT = 10**18;
 
@@ -57,8 +60,8 @@ contract Rewards {
 
 	event UpdateRewardsApx(
 		address user,
-		uint256 amount,
-		bool flag
+		uint256 oldBalance,
+		uint256 latestCum
 	);
 
 	event notifyReward(
@@ -133,15 +136,14 @@ contract Rewards {
 		emit notifyRewardApx(amount);
 	}
 
-	function updateRewardsApx(address account, uint256 amount, bool flag) public onlyTreasuryOrPool {
-		if(account == address(0)) return;
-		if(flag) despoitAmount[account] += amount;
-		else despoitAmount[account] -= amount;
+	function updateRewardsApx(address account, uint256 oldBalance) public onlyTreasuryOrPool {
+		pendingRewardForApx[account] += (cumulativeRewardPerApxStored - latestCum[account]) * oldBalance / UNIT;
+		latestCum[account] = cumulativeRewardPerApxStored;
 
 		emit UpdateRewardsApx(
 			account,
-			amount,
-			flag
+			oldBalance,
+			latestCum[account]
 		);
 	}
 
@@ -165,27 +167,28 @@ contract Rewards {
 		}
 	}
 
-	function increaseDepositCnt() external onlyTreasuryOrPool {
-		despoitCnt ++;
+	function adminAirdrop(uint256 amount) external onlyTreasuryOrPool {
+		uint256 supply = IPool(pool).totalSupply();
+		cumulativeRewardPerApxStored = amount * UNIT / supply;
+	}
+
+	function getWithdrawAmount(address _address) public view returns(uint256 withdrawAmount) {
+		uint256 balances = IPool(pool).getBalance(_address);
+		withdrawAmount = (cumulativeRewardPerApxStored - latestCum[_address]) * balances / UNIT + pendingRewardForApx[_address];
 	}
 
 	function collectRewardApx() external {
-		require(despoitCnt > 0, "Not deposit yet");
-		require(despoitAmount[msg.sender] > 0, "No amount to collect");
-		require(claimApxRewardCnt[msg.sender] < despoitCnt, "Already claim");
+		uint256 withdrawAmount = getWithdrawAmount(msg.sender);
+		_transferOut(msg.sender, withdrawAmount);
+		pendingRewardForApx[msg.sender] = 0;
+		latestCum[msg.sender] = cumulativeRewardPerApxStored;
 
-		address apxPool = IRouter(router).apxPool();
-		uint256 supply = IERC20(apx).balanceOf(apxPool);
-		require(supply > 0, "No amount to send reward");		
-			uint256 rewardAmount = despoitAmount[msg.sender] / supply * 100;
-			_transferOut(msg.sender, rewardAmount);
-			claimApxRewardCnt[msg.sender] = despoitCnt;
-			emit CollectedApxReward(
-				msg.sender, 
-				pool, 
-				currency, 
-				rewardAmount
-			);
+		emit CollectedApxReward(
+			msg.sender, 
+			pool, 
+			currency, 
+			withdrawAmount
+		);
 
 	}
 
@@ -225,11 +228,7 @@ contract Rewards {
 		// adjust decimals
 		uint256 decimals = IRouter(router).getDecimals(currency);
 		amount = amount * (10**decimals) / UNIT;
-		if (currency == address(0)) {
-			payable(to).sendValue(amount);
-		} else {
-			IERC20(currency).safeTransfer(to, amount);
-		}
+		IERC20(currency).safeTransfer(to, amount);
 	}
 
 	modifier onlyOwner() {
