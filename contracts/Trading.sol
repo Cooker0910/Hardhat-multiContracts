@@ -173,7 +173,7 @@ contract Trading {
 		bool isLong,
 		uint256 margin,
 		uint256 size
-	) external payable {
+	) external {
 
 		require(IRouter(router).isSupportedCurrency(currency), "!currency");
 		// Check params
@@ -227,7 +227,7 @@ contract Trading {
 		bool isLong,
 		uint256 size,
 		uint256 funding
-	) external payable {
+	) external {
 
 		require(size > 0, "!size");
 

@@ -10,9 +10,9 @@ import "./interfaces/IRewards.sol";
 contract Pool {
 
 	using SafeERC20 for IERC20; 
-    using Address for address payable;
+	using Address for address payable;
 
-    // Contracts
+	// Contracts
 	address public owner;
 	address public router;
 	address public trading;
@@ -31,7 +31,6 @@ contract Pool {
   uint256 public totalSupply;
 
   mapping(address => uint256) lastDeposited;
-	mapping(address => uint256) latestBalance;
   uint256 public minDepositTime = 1 hours;
 
   uint256 public openInterest;
@@ -97,7 +96,7 @@ contract Pool {
 
 	// Methods
 
-	function deposit(uint256 amount) external payable {
+	function deposit(uint256 amount) external {
 
 		uint256 lastBalance = _getCurrentBalance();
 
@@ -153,7 +152,6 @@ contract Pool {
 		require(currencyAmountAfterFee <= availableBalance, "!available-balance");
 
 		totalSupply -= amount;
-		latestBalance[msg.sender] = balances[msg.sender];
 		balances[msg.sender] -= amount;
 
 		_transferOut(msg.sender, currencyAmountAfterFee);
@@ -227,10 +225,6 @@ contract Pool {
 	// In Clp
 	function getBalance(address account) external view returns(uint256) {
 		return balances[account];
-	}
-
-	function getLatestBalance(address account) external view returns(uint256) {
-		return latestBalance[account];
 	}
 
 	// Modifier

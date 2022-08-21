@@ -210,7 +210,7 @@ contract Rewards {
 		uint256 _rewardPerTokenStored = cumulativeRewardPerTokenStored + _pendingReward * UNIT / supply;
 		if (_rewardPerTokenStored == 0) return currentClaimableReward; // no rewards yet
 
-		uint256 accountStakedBalance = IPool(pool).getLatestBalance(msg.sender);
+		uint256 accountStakedBalance = IPool(pool).getBalance(msg.sender);
 
 		return currentClaimableReward + accountStakedBalance * (_rewardPerTokenStored - previousRewardPerToken[msg.sender]) / UNIT;
 		

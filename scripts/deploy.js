@@ -71,10 +71,10 @@ async function main() {
   // console.log("Oracle deployed to:", oracle.address);
 
   // Treasury
-  const Treasury = await hre.ethers.getContractFactory("Treasury");
-  const treasury = await Treasury.deploy();
-  await treasury.deployed();
-  console.log("Treasury deployed to:", treasury.address);
+  // const Treasury = await hre.ethers.getContractFactory("Treasury");
+  // const treasury = await Treasury.deploy();
+  // await treasury.deployed();
+  // console.log("Treasury deployed to:", treasury.address);
 
   // // APX, USDC mock tokens (local only)
 
@@ -89,14 +89,14 @@ async function main() {
   // const usdc = await USDC.deploy();
   // await usdc.deployed();
   
-  // const usdc = {address: '0x61A45EfEa594BF57d2c522E38ef8E90534514aDA'};
+  const usdc = {address: '0x09bd0016ba4e89D9746fc705B40f976aF8E891B7'};
   // console.log("usdc:", usdc.address);
   
   // const tWETH = await hre.ethers.getContractFactory("tWETH");
   // const tETH = await tWETH.deploy();
   // await tETH.deployed();
 
-  // const tETH = {address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'};
+  const tETH = {address: '0x86006A624149756064d3e7e0B059F294fA476da6'};
   // console.log("tETH:", tETH.address);
 
 
@@ -108,28 +108,28 @@ async function main() {
   // const poolAPX = {address: '0x4D458E888073e38b3fd5756db9Aa0A8A12d51405'}
 
   // Pools (WETH, USDC)
-  // const Pool = await hre.ethers.getContractFactory("Pool");
+  const Pool = await hre.ethers.getContractFactory("Pool");
   
-  // const poolETH = await Pool.deploy(tETH.address);
-  // await poolETH.deployed();
-  // console.log("poolETH deployed to:", poolETH.address);
+  const poolETH = await Pool.deploy(tETH.address);
+  await poolETH.deployed();
+  console.log("poolETH deployed to:", poolETH.address);
 
-  // const poolUSDC = await Pool.deploy(usdc.address);
-  // await poolUSDC.deployed();
-  // console.log("poolUSDC deployed to:", poolUSDC.address);
+  const poolUSDC = await Pool.deploy(usdc.address);
+  await poolUSDC.deployed();
+  console.log("poolUSDC deployed to:", poolUSDC.address);
   
   // Rewards
 
-  // const Rewards = await hre.ethers.getContractFactory("Rewards");
+  const Rewards = await hre.ethers.getContractFactory("Rewards");
 
-  // Rewards for Pools
-  // const poolRewardsETH = await Rewards.deploy(poolETH.address, tETH.address);
-  // await poolRewardsETH.deployed();
-  // console.log("poolRewardsETH deployed to:", poolRewardsETH.address);
+  //Rewards for Pools
+  const poolRewardsETH = await Rewards.deploy(poolETH.address, tETH.address);
+  await poolRewardsETH.deployed();
+  console.log("poolRewardsETH deployed to:", poolRewardsETH.address);
 
-  // const poolRewardsUSDC = await Rewards.deploy(poolUSDC.address, usdc.address);
-  // await poolRewardsUSDC.deployed();
-  // console.log("poolRewardsUSDC deployed to:", poolRewardsUSDC.address);
+  const poolRewardsUSDC = await Rewards.deploy(poolUSDC.address, usdc.address);
+  await poolRewardsUSDC.deployed();
+  console.log("poolRewardsUSDC deployed to:", poolRewardsUSDC.address);
 
   // Rewards for Apx
   // const apxRewardsETH = await Rewards.deploy(poolAPX.address, tETH.address);
@@ -177,7 +177,7 @@ async function main() {
 
   // // Link contracts with Router, which also sets their dependent contract addresses
   // await trading.setRouter(router.address);
-  await treasury.setRouter(router.address);
+  // await treasury.setRouter(router.address);
   // await poolAPX.setRouter(router.address);
   // await oracle.setRouter(router.address);
   // await poolETH.setRouter(router.address);
