@@ -31,6 +31,7 @@ contract Pool {
   uint256 public totalSupply;
 
   mapping(address => uint256) lastDeposited;
+	mapping(address => uint256) latestBalance;
   uint256 public minDepositTime = 1 hours;
 
   uint256 public openInterest;
@@ -152,6 +153,7 @@ contract Pool {
 		require(currencyAmountAfterFee <= availableBalance, "!available-balance");
 
 		totalSupply -= amount;
+		latestBalance[msg.sender] = balances[msg.sender];
 		balances[msg.sender] -= amount;
 
 		_transferOut(msg.sender, currencyAmountAfterFee);
@@ -162,7 +164,7 @@ contract Pool {
     uint256 feeAmountforReward = feeAmount * 75 / 100;
 		_transferOut(rewards, feeAmountforReward);
 		_transferOut(treasury, feeAmountforTreasury);
-		IRewards(rewards).notifyRewardReceived(feeAmount);
+		IRewards(rewards).notifyRewardReceived(feeAmountforReward);
 
 		emit Withdraw(
 			msg.sender,
@@ -203,12 +205,7 @@ contract Pool {
 	}
 
 	function _getCurrentBalance() internal view returns(uint256) {
-		uint256 currentBalance;
-		if (currency == address(0)) {
-			currentBalance = address(this).balance;
-		} else {
-			currentBalance = IERC20(currency).balanceOf(address(this));
-		}
+		uint256 currentBalance = IERC20(currency).balanceOf(address(this));
 		uint256 decimals = IRouter(router).getDecimals(currency);
 		return currentBalance * UNIT / (10**decimals);
 	}
@@ -230,6 +227,10 @@ contract Pool {
 	// In Clp
 	function getBalance(address account) external view returns(uint256) {
 		return balances[account];
+	}
+
+	function getLatestBalance(address account) external view returns(uint256) {
+		return latestBalance[account];
 	}
 
 	// Modifier

@@ -11,5 +11,7 @@ interface IPool {
     function getUtilization() external view returns (uint256);
 
     function getBalance(address account) external view returns (uint256);
+    
+    function getLatestBalance(address account) external view returns (uint256);
 
 }

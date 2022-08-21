@@ -28,10 +28,9 @@ contract Rewards {
 	uint256 public pendingReward;
 	uint256 public pendingRewardApx;
 	
-	mapping(address => uint256) private claimableReward;
-	mapping(address => uint256) private previousRewardPerToken;
+	mapping(address => uint256) public claimableReward;
+	mapping(address => uint256) public previousRewardPerToken;
 
-	uint256 public despoitCnt;
 	mapping(address => uint256) public despoitAmount;
 	mapping(address => uint256) public pendingRewardForApx;
 	mapping(address => uint256) public latestCum;
@@ -179,7 +178,7 @@ contract Rewards {
 
 	function collectRewardApx() external {
 		uint256 withdrawAmount = getWithdrawAmount(msg.sender);
-		_transferOut(msg.sender, withdrawAmount);
+		IERC20(currency).safeTransfer(msg.sender, withdrawAmount);
 		pendingRewardForApx[msg.sender] = 0;
 		latestCum[msg.sender] = cumulativeRewardPerApxStored;
 
@@ -211,7 +210,7 @@ contract Rewards {
 		uint256 _rewardPerTokenStored = cumulativeRewardPerTokenStored + _pendingReward * UNIT / supply;
 		if (_rewardPerTokenStored == 0) return currentClaimableReward; // no rewards yet
 
-		uint256 accountStakedBalance = IPool(pool).getBalance(msg.sender);
+		uint256 accountStakedBalance = IPool(pool).getLatestBalance(msg.sender);
 
 		return currentClaimableReward + accountStakedBalance * (_rewardPerTokenStored - previousRewardPerToken[msg.sender]) / UNIT;
 		
