@@ -94,14 +94,16 @@ contract Oracle {
 		bytes32[] calldata productIds,
 		address[] calldata currencies,
 		bool[] calldata directions,
-		uint256[] calldata prices
+		uint256[] calldata prices,
+		uint256[] calldata fundings
 	) external onlyDarkOracle {
 		for (uint256 i = 0; i < users.length; i++) {
 			address user = users[i];
 			bytes32 productId = productIds[i];
 			address currency = currencies[i];
 			bool isLong = directions[i];
-			ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i]);
+			uint256 funding = fundings[i];
+			ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i], funding);
 		}
 		_tallyOracleRequests(users.length);
 	}

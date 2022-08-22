@@ -55,7 +55,7 @@ async function main() {
   // const Router = await hre.ethers.getContractFactory("Router");
   // const router = await Router.deploy();
   // await router.deployed();
-  const router = {address: '0x25Fb5B11c01E29118951F067B9eB66cf0732D96F'};
+  const router = {address: '0x1ea70A48283252D44F9Da3A8ef2fc44aE233F692'};
   // console.log("Router deployed to:", router.address);
 
   // Trading
@@ -65,10 +65,10 @@ async function main() {
   // console.log("Trading deployed to:", trading.address);
 
   // Oracle
-  // const Oracle = await hre.ethers.getContractFactory("Oracle");
-  // const oracle = await Oracle.deploy();
-  // await oracle.deployed();
-  // console.log("Oracle deployed to:", oracle.address);
+  const Oracle = await hre.ethers.getContractFactory("Oracle");
+  const oracle = await Oracle.deploy();
+  await oracle.deployed();
+  console.log("Oracle deployed to:", oracle.address);
 
   // Treasury
   // const Treasury = await hre.ethers.getContractFactory("Treasury");
@@ -108,28 +108,28 @@ async function main() {
   // const poolAPX = {address: '0x4D458E888073e38b3fd5756db9Aa0A8A12d51405'}
 
   // Pools (WETH, USDC)
-  const Pool = await hre.ethers.getContractFactory("Pool");
+  // const Pool = await hre.ethers.getContractFactory("Pool");
   
-  const poolETH = await Pool.deploy(tETH.address);
-  await poolETH.deployed();
-  console.log("poolETH deployed to:", poolETH.address);
+  // const poolETH = await Pool.deploy(tETH.address);
+  // await poolETH.deployed();
+  // console.log("poolETH deployed to:", poolETH.address);
 
-  const poolUSDC = await Pool.deploy(usdc.address);
-  await poolUSDC.deployed();
-  console.log("poolUSDC deployed to:", poolUSDC.address);
+  // const poolUSDC = await Pool.deploy(usdc.address);
+  // await poolUSDC.deployed();
+  // console.log("poolUSDC deployed to:", poolUSDC.address);
   
   // Rewards
 
-  const Rewards = await hre.ethers.getContractFactory("Rewards");
+  // const Rewards = await hre.ethers.getContractFactory("Rewards");
 
   //Rewards for Pools
-  const poolRewardsETH = await Rewards.deploy(poolETH.address, tETH.address);
-  await poolRewardsETH.deployed();
-  console.log("poolRewardsETH deployed to:", poolRewardsETH.address);
+  // const poolRewardsETH = await Rewards.deploy(poolETH.address, tETH.address);
+  // await poolRewardsETH.deployed();
+  // console.log("poolRewardsETH deployed to:", poolRewardsETH.address);
 
-  const poolRewardsUSDC = await Rewards.deploy(poolUSDC.address, usdc.address);
-  await poolRewardsUSDC.deployed();
-  console.log("poolRewardsUSDC deployed to:", poolRewardsUSDC.address);
+  // const poolRewardsUSDC = await Rewards.deploy(poolUSDC.address, usdc.address);
+  // await poolRewardsUSDC.deployed();
+  // console.log("poolRewardsUSDC deployed to:", poolRewardsUSDC.address);
 
   // Rewards for Apx
   // const apxRewardsETH = await Rewards.deploy(poolAPX.address, tETH.address);
@@ -179,7 +179,7 @@ async function main() {
   // await trading.setRouter(router.address);
   // await treasury.setRouter(router.address);
   // await poolAPX.setRouter(router.address);
-  // await oracle.setRouter(router.address);
+  await oracle.setRouter(router.address);
   // await poolETH.setRouter(router.address);
   // await poolUSDC.setRouter(router.address);
   // await poolRewardsETH.setRouter(router.address);

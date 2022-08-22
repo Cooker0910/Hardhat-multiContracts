@@ -28,8 +28,8 @@ contract Rewards {
 	uint256 public pendingReward;
 	uint256 public pendingRewardApx;
 	
-	mapping(address => uint256) public claimableReward;
-	mapping(address => uint256) public previousRewardPerToken;
+	mapping(address => uint256) private claimableReward;
+	mapping(address => uint256) private previousRewardPerToken;
 
 	mapping(address => uint256) public despoitAmount;
 	mapping(address => uint256) public pendingRewardForApx;
