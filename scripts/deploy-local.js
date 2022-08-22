@@ -45,7 +45,7 @@ async function main() {
   */
 
   // // Local
-  const darkOracle = {address: '0xfc69685086C75Dbbb3834a524F9D36ECB8bB1745'};
+  const darkOracle = {address: '0xdb47786d2254dC86055000bc1079659610ed3e8F'};
 
   const account = await signer.getAddress();
   console.log('account', account);

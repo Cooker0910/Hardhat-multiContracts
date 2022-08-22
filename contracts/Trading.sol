@@ -104,6 +104,19 @@ contract Trading {
 		bool wasLiquidated
 	);
 
+	event LiquidationError(
+		bytes32 indexed key,
+		address indexed user,
+		bytes32 indexed productId,
+		address currency,
+		bool isLong,
+		uint256 price,
+		uint256 margin,
+		int256 pnl,
+		uint256 threshold,
+		uint256 funding
+	);
+
 	constructor() {
 		owner = msg.sender;
 	}
@@ -470,7 +483,7 @@ contract Trading {
 		thresholdForPool = threshold * 75 / 100 + funding * 75 / 100;
 		thresholdForTreasury = threshold * 25 /100 + funding * 25 / 100;
 
-		if (pnl <= -1 * int256(threshold)) {
+		if (pnl <= -1 * int256(threshold + funding)) {
 
 			uint256 fee = position.margin - threshold - funding;
 			address pool = IRouter(router).getPool(currency);
@@ -494,6 +507,19 @@ contract Trading {
 				true
 			);
 			delete positions[key];
+		} else {
+			emit LiquidationError(
+				key, 
+				user,
+				productId,
+				currency,
+				isLong,
+				price,
+				position.margin,
+				pnl,
+				threshold,
+				funding
+			);
 		}
 	}
 

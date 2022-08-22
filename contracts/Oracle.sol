@@ -27,6 +27,14 @@ contract Oracle {
 		string reason
 	);
 
+	event LiquidationError(
+		address indexed user,
+		address currency,
+		bytes32 productId,
+		bool isLong,
+		string reason
+	);
+
 	constructor() {
 		owner = msg.sender;
 	}
@@ -103,7 +111,17 @@ contract Oracle {
 			address currency = currencies[i];
 			bool isLong = directions[i];
 			uint256 funding = fundings[i];
-			ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i], funding);
+			try ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i], funding){
+
+			} catch Error(string memory reason) {
+				emit LiquidationError(
+					user,
+					currency,
+					productId,
+					isLong,
+					reason
+				);
+			}
 		}
 		_tallyOracleRequests(users.length);
 	}
