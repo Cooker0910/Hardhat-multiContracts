@@ -84,7 +84,7 @@ contract Treasury {
 	) public onlyOwner {
 		uint256 balance = IERC20(token).balanceOf(address(this));
 		require(balance > 0, "No amount for reward");
-		require(balance > amount, "Exceed amount to send");
+		require(balance >= amount, "Exceed amount to send");
 		address apxRewards = IRouter(router).getApxRewards(token);
 		IRewards(apxRewards).adminAirdrop(amount);
 		IERC20(token).transfer(apxRewards, amount);
