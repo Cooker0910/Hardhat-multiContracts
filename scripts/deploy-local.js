@@ -234,6 +234,10 @@ async function main() {
   await apx.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("5000", 18));
   await tweth.mint('0xc71a06bfBC63454a8087Ab40825829613E6d6fAA', parseUnits("5000", 18));
 
+  await usdc.mint('0xb6F3C8Ea070C9f01081B890E0BeF72f5554d861B', parseUnits("5000", 6));
+  await apx.mint('0xb6F3C8Ea070C9f01081B890E0BeF72f5554d861B', parseUnits("5000", 18));
+  await tweth.mint('0xb6F3C8Ea070C9f01081B890E0BeF72f5554d861B', parseUnits("5000", 18));
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere

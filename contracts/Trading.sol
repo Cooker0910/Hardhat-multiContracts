@@ -113,8 +113,7 @@ contract Trading {
 		uint256 price,
 		uint256 margin,
 		int256 pnl,
-		uint256 threshold,
-		uint256 funding
+		uint256 threshold
 	);
 
 	constructor() {
@@ -461,8 +460,7 @@ contract Trading {
 		bytes32 productId,
 		address currency,
 		bool isLong,
-		uint256 price,
-		uint256 funding
+		uint256 price
 	) external onlyOracle {
 
 		bytes32 key = _getPositionKey(user, productId, currency, isLong);
@@ -480,12 +478,12 @@ contract Trading {
 		int256 pnl = _getPnL(isLong, price, position.price, position.size, product.interest, position.timestamp);
 
 		uint256 threshold = position.margin * product.liquidationThreshold / 10**4;
-		thresholdForPool = threshold * 75 / 100 + funding * 75 / 100;
-		thresholdForTreasury = threshold * 25 /100 + funding * 25 / 100;
+		thresholdForPool = position.margin * 75 / 100;
+		thresholdForTreasury = position.margin * 25 /100;
 
-		if (pnl <= -1 * int256(threshold + funding)) {
+		if (pnl <= -1 * int256(threshold)) {
 
-			uint256 fee = position.margin - threshold - funding;
+			uint256 fee = position.margin * product.fee / 10**6;
 			address pool = IRouter(router).getPool(currency);
 
 			_transferOut(currency, pool, thresholdForPool);
@@ -517,8 +515,7 @@ contract Trading {
 				price,
 				position.margin,
 				pnl,
-				threshold,
-				funding
+				threshold
 			);
 		}
 	}
