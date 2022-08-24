@@ -102,16 +102,14 @@ contract Oracle {
 		bytes32[] calldata productIds,
 		address[] calldata currencies,
 		bool[] calldata directions,
-		uint256[] calldata prices,
-		uint256[] calldata fundings
+		uint256[] calldata prices
 	) external onlyDarkOracle {
 		for (uint256 i = 0; i < users.length; i++) {
 			address user = users[i];
 			bytes32 productId = productIds[i];
 			address currency = currencies[i];
 			bool isLong = directions[i];
-			uint256 funding = fundings[i];
-			try ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i], funding){
+			try ITrading(trading).liquidatePosition(user, productId, currency, isLong, prices[i]){
 
 			} catch Error(string memory reason) {
 				emit LiquidationError(
