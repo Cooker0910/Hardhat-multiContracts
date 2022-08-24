@@ -168,7 +168,7 @@ contract Rewards {
 
 	function adminAirdrop(uint256 amount) external onlyTreasuryOrPool {
 		uint256 supply = IPool(pool).totalSupply();
-		cumulativeRewardPerApxStored = amount * UNIT / supply;
+		cumulativeRewardPerApxStored += amount * UNIT / supply;
 	}
 
 	function getWithdrawAmount(address _address) public view returns(uint256 withdrawAmount) {
