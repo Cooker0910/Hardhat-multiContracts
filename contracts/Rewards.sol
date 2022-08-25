@@ -217,7 +217,6 @@ contract Rewards {
 	}
 
 	// To receive ETH
-	fallback() external payable {}
 	receive() external payable {}
 
 	// Utils

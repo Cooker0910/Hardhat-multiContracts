@@ -566,7 +566,6 @@ contract Trading {
 	}
 
 	// To receive ETH
-	fallback() external payable {}
 	receive() external payable {}
 
 	// Internal methods
